@@ -21,7 +21,11 @@ def prepare_mask(mask):
 		mask = result
 	return mask
 
-def blend(img_target, img_source, img_mask, offset=(0, 0), mixing = False):
+def blend(img_target, img_source, img_mask, offset=(0, 0), mode = 0):
+	# modes:
+	#	0 — standard
+	#	1 — mixing
+	#	2 — average
 	# compute regions to be blended
 	region_source = (
 			max(-offset[0], 0),
@@ -106,10 +110,12 @@ def blend(img_target, img_source, img_mask, offset=(0, 0), mixing = False):
 						if checkIfOutOfRange(p2) and img_mask[p2] != 0:
 							s1 = int(sour[y,x]) - int(sour[p2])
 							s2 = int(tar[y,x]) - int(tar[p2])
-							if mixing:
+							if mode == 0: #standard
+								sum+= s1
+							elif mode == 1: #mixing
 								sum+=  s1 if abs(s1) >= abs(s2) else s2
-							else:
-								sum+= s2
+							elif mode == 2: #average
+								sum += (1.0*(s1 + s2))/2
 					b[index] = sum
 				else:
 					pass
@@ -177,12 +183,13 @@ def test2():
 	img_ret = blend(img_target, img_source, img_mask, offset=(img1.shape[0] - d,0))
 	cv2.imwrite('./testimages/test2_ret.png', img_ret)
 	
-def test(mixing = False):
-	d = 50; n = 6
+def test(mode = 0):
+	d = 50; n = 5
+	sufx = ['', '_mixed', '_average']
 	fmask = './testimages/test' + str(n) + '_mask.png'
 	fsource = './testimages/test' + str(n) + '_source.png'
 	ftarget = './testimages/test' + str(n) + '_target.png'
-	fret = './testimages/test' + str(n) + '_ret' + ('_mixed' if mixing else '') + '.png'
+	fret = './testimages/test' + str(n) + '_ret' + sufx[mode] + '.png'
 	#img_mask = np.asarray(PIL.Image.open('./testimages/test1_mask.png'))
 	img_mask = np.asarray(PIL.Image.open(fmask))
 	img_mask.flags.writeable = True
@@ -195,10 +202,10 @@ def test(mixing = False):
 	#of = (0,int(img_target.shape[1]/2 - 3*d/4))
 	of = (0,int((img_target.shape[1] - d)/2 - 1))
 	#of = (40,-30)
-	img_ret = blend(img_target, img_source, img_mask, offset=of, mixing = mixing)
+	img_ret = blend(img_target, img_source, img_mask, offset=of, mode = mode)
 	img_ret = PIL.Image.fromarray(np.uint8(img_ret))
 	img_ret.save(fret)
 
 
 if __name__ == '__main__':
-	test(mixing = False)
+	test(2)
