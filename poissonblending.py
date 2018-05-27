@@ -116,6 +116,8 @@ def blend(img_target, img_source, img_mask, offset=(0, 0), mode = 0):
 								sum+=  s1 if abs(s1) >= abs(s2) else s2
 							elif mode == 2: #average
 								sum += (1.0*(s1 + s2))/2
+							elif mode == -1:
+								pass
 					b[index] = sum
 				else:
 					pass
@@ -185,7 +187,7 @@ def test2():
 	
 def test(mode = 0):
 	d = 50; n = 5
-	sufx = ['', '_mixed', '_average']
+	sufx = ['', '_mixed', '_average', '_none']
 	fmask = './testimages/test' + str(n) + '_mask.png'
 	fsource = './testimages/test' + str(n) + '_source.png'
 	ftarget = './testimages/test' + str(n) + '_target.png'
@@ -208,4 +210,4 @@ def test(mode = 0):
 
 
 if __name__ == '__main__':
-	test(2)
+	test(1)
