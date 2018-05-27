@@ -21,13 +21,13 @@ img_ret.flags.writeable = True
 img_retn.flags.writeable = True
 
 x = 450
-"""
+
 img1 = np.zeros((500,500))
 img1[:,:x] = img_target[:, :x]
 img1[:,x:] = img_source
 img2 = np.zeros((500,500))
 img2 = img_target[:,x:]
-"""
+
 MEAN1 = []; MEAN2 = []; MEAN3 = []; MEANR1 = []; MEANR2 = []; MEANR3 = []
 VAR1 = []; VAR2 = []; VAR3 = []; VARR1 = []; VARR2 = []; VARR3 = []
 for row in range(500):
@@ -65,6 +65,8 @@ for row in range(500):
 
 print np.mean(MEAN1), np.mean(MEAN2), np.mean(MEAN3)
 print np.mean(MEANR1), np.mean(MEANR2), np.mean(MEANR3)
+print np.var(MEAN1), np.var(MEAN2), np.var(MEAN3)
+print np.var(MEANR1), np.var(MEANR2), np.var(MEANR3)
 print np.mean(VAR1), np.mean(VAR2), np.mean(VAR3)
 print np.mean(VARR1), np.mean(VARR2), np.mean(VARR3)
 
@@ -83,12 +85,19 @@ br1, kek = np.histogram(VARR1, bins)
 br2, kek = np.histogram(VARR2, bins)
 br3, kek = np.histogram(VARR3, bins)
 
-plt.plot(bins[:-1], 1.*a1/sum(a1), color = 'red', label = "left")
-plt.plot(bins[:-1], 1.*a2/sum(a2), color = 'blue', label = "right")
+c1, kek = np.histogram(img1, bins)
+c2, kek = np.histogram(img2, bins)
+c3, kek = np.histogram(img_ret, bins)
+
+plt.plot(bins[:-1], 1.*c1/sum(c1), color = 'red', label = "left")
+plt.plot(bins[:-1], 1.*c2/sum(c2), color = 'blue', label = "right")
+plt.plot(bins[:-1], 1.*c3/sum(c3), color = 'green', label = "blended")
+#plt.plot(bins[:-1], 1.*a1/sum(a1), color = 'red', label = "left")
+#plt.plot(bins[:-1], 1.*a2/sum(a2), color = 'blue', label = "right")
 #plt.plot(bins[:-1], a3, color = 'green', label = "both")
 #plt.plot(bins[:-1], ar1, 'r-', label = "left blend")
 #plt.plot(bins[:-1], ar2, 'b-', label = "right blend")
-plt.plot(bins[:-1], 1.*ar3/sum(ar3), 'g-', label = "both blend")
+#plt.plot(bins[:-1], 1.*ar3/sum(ar3), 'g-', label = "both blend")
 #plt.plot(bins[:-1], b1, color = 'red', label = "left")
 #plt.plot(bins[:-1], b2, color = 'blue', label = "right")
 plt.legend(loc='upper right')
